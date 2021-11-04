@@ -1,28 +1,24 @@
 import numpy as np
 
-class mtgReader:
+class BranchAnalysis:
     def __init__(self):
         return
 
     def sortBranches(self, coords):
+        '''
+        aangepast naar huidige mtg format
+        '''
         tree = []
         counter = 0
         for x in coords:
             if(x[2] == "<"):
                 for y in range(counter):
-                    #print(tree[y][-1][0])
-                    #print(x[1])
                     if(tree[y][-1][0] == x[1]):
                         tree[y].append(x)
                         break
                     else:
                         continue
-            elif(x[2] == "+"):
-                branch = []
-                branch.append(x)
-                tree.append(branch)
-                counter += 1
-            else:
+            elif(x[2] == "+" or x[2] == None):
                 branch = []
                 branch.append(x)
                 tree.append(branch)
@@ -58,7 +54,6 @@ class mtgReader:
             print(tree[branchCounter][0][0])
 
     def lengthBranches(self, tree):
-        branchCounter = 0
         lengthBranch = 0
         totalLength = 0
         lengthList = []
@@ -68,12 +63,8 @@ class mtgReader:
                 lengthList.append(0)
             else:
                 for j in range(lengthBranch-1):
-                    if(i[0][0] == '2' and j == 0):
-                        v1 = np.array([i[j][1], i[j][2], i[j][3]], dtype=float)
-                        v2 = np.array([i[j+1][3], i[j+1][4], i[j+1][5]], dtype=float)
-                    else:
-                        v1 = np.array([i[j][3], i[j][4], i[j][5]], dtype=float)
-                        v2 = np.array([i[j+1][3], i[j+1][4], i[j+1][5]], dtype=float)
+                    v1 = np.array([i[j][3][0], i[j][3][1], i[j][3][2]], dtype=float)
+                    v2 = np.array([i[j+1][3][0], i[j+1][3][1], i[j+1][3][2]], dtype=float)
 
                     squared_dist = np.sum((v1-v2)**2, axis=0)
                     length = np.sqrt(squared_dist)
@@ -119,7 +110,7 @@ class mtgReader:
         return
 
 if __name__ == "__main__":
-    vruchthout = mtgReader()
+    vruchthout = BranchAnalysis()
     coords = []
     minimumLeiderLength = 1.0
 

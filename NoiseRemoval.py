@@ -1,9 +1,11 @@
 import open3d as o3d
 import numpy as np
 
-class PointCloudRemoval:
+class NoiseRemoval:
+    def __init__(self):
+        return
 
-    def display_inlier_outlier(cloud, ind):
+    def display_inlier_outlier(self, cloud, ind):
         #In Open3D tutorial they use select_down_sample, but this doesn't excist.
         #The correct function is: select_by_index
         inlier_cloud = cloud.select_by_index(ind)
@@ -14,10 +16,9 @@ class PointCloudRemoval:
         inlier_cloud.paint_uniform_color([0.8, 0.8, 0.8])
         o3d.visualization.draw_geometries([inlier_cloud, outlier_cloud])
 
-
-    if __name__ == "__main__":
+    def main(self):
         print("Load a ply point cloud, print it, and render it")
-        pcd = o3d.io.read_point_cloud("../pointCloud_appel_boom/Apple/Apple view 1.xyz")
+        pcd = o3d.io.read_point_cloud("C:/Users/Olav/Documents/School/TI04/Afstudeerstage/pointCloud_appel_boom/Apple/pcTwoHead2.ply")
         #../pointCloud_appel_boom/Apple/Apple view 1.xyz
         #../pointCloud/peerThijs.xyz
         print(pcd)
@@ -25,12 +26,12 @@ class PointCloudRemoval:
         o3d.visualization.draw_geometries([pcd])
 
         #print("Downsample the point cloud with a voxel of 0.02")
-        voxel_down_pcd = pcd.voxel_down_sample(voxel_size=0.002)
-        o3d.visualization.draw_geometries([voxel_down_pcd])
+        #voxel_down_pcd = pcd.voxel_down_sample(voxel_size=0.002)
+        #o3d.visualization.draw_geometries([voxel_down_pcd])
 
         print("Every 5th points are selected")
-        uni_down_pcd = pcd.uniform_down_sample(every_k_points=5)
-        o3d.visualization.draw_geometries([uni_down_pcd])
+        #uni_down_pcd = pcd.uniform_down_sample(every_k_points=5)
+        #o3d.visualization.draw_geometries([uni_down_pcd])
 
         print("Statistical oulier removal")
         #statistical_outlier_removal removes points that are further away from their 
@@ -42,9 +43,9 @@ class PointCloudRemoval:
         #std_ratio allows to set the threshold level based on the standard deviation 
         #of the average distances across the point cloud. 
         #The lower this number the more aggressive the filter will be.
-        cl, ind = uni_down_pcd.remove_statistical_outlier(nb_neighbors=20,
+        cl, ind = pcd.remove_statistical_outlier(nb_neighbors=20,
                                                             std_ratio=2.0)
-        display_inlier_outlier(uni_down_pcd, ind)
+        self.display_inlier_outlier(pcd, ind)
 
         print("Radius oulier removal")
         #radius_outlier_removal removes points that have few neighbors in a given sphere around them. 
@@ -57,4 +58,9 @@ class PointCloudRemoval:
         #display_inlier_outlier(voxel_down_pcd, ind)
         o3d.visualization.draw_geometries([cl])
 
-        o3d.io.write_point_cloud("apple.ply", cl)
+        o3d.io.write_point_cloud("pcTwoHeadtest.ply", cl)
+
+
+if __name__ == "__main__":
+    cleaning = NoiseRemoval()
+    cleaning.main()
